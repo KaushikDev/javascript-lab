@@ -16,7 +16,7 @@ export function createFetchFields(interactivePanelPlayArea) {
   parentDiv = document.createElement("div");
 
   parentDiv.classList.add("ip__fetch-container");
-  parentDiv.textContent = "hello I am inside Interactive Panel for Fetch!!";
+
   interactivePanelPlayArea.appendChild(parentDiv);
 
   // creating the select field where type of api request could be selected
