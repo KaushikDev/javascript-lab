@@ -1,3 +1,4 @@
+import { launchSpaceShooter } from "./modules/canvas/canvas.js";
 import { createFetchFields, callFetchApi } from "./modules/fetch/fetch.js";
 import { capitaliseFirstChar } from "./utils/helpers.js";
 
@@ -28,6 +29,8 @@ panelCards.forEach((panelCard) => {
     if (selectedPanel === "fetch") {
       createFetchFields(interactivePanelPlayArea);
     }
+    if (selectedPanel === "canvas") {
+      launchSpaceShooter(interactivePanelPlayArea);
+    }
   });
 });
-
