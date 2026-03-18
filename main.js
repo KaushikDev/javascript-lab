@@ -1,4 +1,4 @@
-import { setupCanvasIP } from "./modules/canvas/canvas.js";
+import { setupCanvasIP, removeCanvasIP } from "./modules/canvas/canvas.js";
 import { setupFetchIP } from "./modules/fetch/fetch.js";
 import { setupDebounceIP } from "./modules/debounce/debounce.js";
 import { setupThrottleIP } from "./modules/throttle/throttle.js";
@@ -13,9 +13,6 @@ const panelCards = document.querySelectorAll("[data-panel]");
 let selectedPanel;
 
 panelCards.forEach((panelCard) => {
-  // For development purposes only :
-  //document.querySelector('[data-panel="debounce"]').click();
-  // remove above after development please
   panelCard.addEventListener("click", function () {
     interactivePanel.style.display = "flex";
     labOptions.style.display = "none";
@@ -28,6 +25,7 @@ panelCards.forEach((panelCard) => {
     interactivePanelPlayArea = document.querySelector(".ip__playarea");
     closeIpBtn = document.querySelector(".ip__close");
     closeIpBtn.addEventListener("click", () => {
+      removeCanvasIP();
       interactivePanel.style.display = "none";
       labOptions.style.display = "flex";
     });
@@ -48,3 +46,7 @@ panelCards.forEach((panelCard) => {
     }
   });
 });
+
+// For development purposes only :
+document.querySelector('[data-panel="canvas"]').click();
+// remove above after development please
