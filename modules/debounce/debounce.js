@@ -11,7 +11,12 @@ export function setupDebounceIP(interactivePanelPlayArea) {
   const inputRawText = document.createElement("input");
   inputRawText.classList.add("debounce__input");
   Object.assign(inputRawText, { placeholder: "Enter your text here..." });
-  wrapInDivAndAddLabel("debounce", parentDiv, inputRawText, "Raw Text");
+  wrapInDivAndAddLabel(
+    "debounce",
+    parentDiv,
+    inputRawText,
+    "Type as fast as you can",
+  );
 
   const inputDebounceTime = document.createElement("input");
   inputDebounceTime.classList.add("debounce__time");
@@ -30,13 +35,17 @@ export function setupDebounceIP(interactivePanelPlayArea) {
     `Set Debounce Time(${inputDebounceTime.value}ms)`,
   );
 
+  const outputActualText = document.createElement("p");
+  outputActualText.classList.add("debounce__output");
+  wrapInDivAndAddLabel("debounce", parentDiv, outputActualText, "Actual Text");
+
   const outputDebounceText = document.createElement("p");
   outputDebounceText.classList.add("debounce__output");
   wrapInDivAndAddLabel(
     "debounce",
     parentDiv,
     outputDebounceText,
-    "Debounced Output",
+    "Debounced Text",
   );
 
   inputDebounceTime.addEventListener("input", () => {
@@ -46,7 +55,7 @@ export function setupDebounceIP(interactivePanelPlayArea) {
 
   inputRawText.addEventListener("input", (e) => {
     clearTimeout(debounceTimeout);
-
+    outputActualText.innerText = e.target.value;
     debounceTimeout = setTimeout(() => {
       outputDebounceText.innerText = e.target.value;
     }, debounceTimer);

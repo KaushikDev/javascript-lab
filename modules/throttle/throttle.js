@@ -44,7 +44,7 @@ export function setupThrottleIP(interactivePanelPlayArea) {
     "throttle",
     parentDiv,
     outputThrottleText,
-    "Throttled Output",
+    "Throttled Clicks",
   );
 
   inputThrottleTime.addEventListener("input", () => {

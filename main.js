@@ -14,7 +14,7 @@ let selectedPanel;
 
 panelCards.forEach((panelCard) => {
   // For development purposes only :
-  document.querySelector('[data-panel="throttle"]').click();
+  document.querySelector('[data-panel="debounce"]').click();
   // remove above after development please
   panelCard.addEventListener("click", function () {
     interactivePanel.style.display = "flex";
