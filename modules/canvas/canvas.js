@@ -1,4 +1,4 @@
-export function launchSpaceShooter(interactivePanelPlayArea) {
+export function setupCanvasIP(interactivePanelPlayArea) {
   const canvas = document.createElement("canvas");
   const parentDiv = document.createElement("div");
 
