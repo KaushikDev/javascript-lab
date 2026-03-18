@@ -1,5 +1,7 @@
-import { launchSpaceShooter } from "./modules/canvas/canvas.js";
-import { createFetchFields, callFetchApi } from "./modules/fetch/fetch.js";
+import { setupCanvasIP } from "./modules/canvas/canvas.js";
+import { setupFetchIP } from "./modules/fetch/fetch.js";
+import { setupDebounceIP } from "./modules/debounce/debounce.js";
+import { setupThrottleIP } from "./modules/throttle/throttle.js";
 import { capitaliseFirstChar } from "./utils/helpers.js";
 
 const labOptions = document.querySelector(".js-lab__options");
@@ -11,6 +13,9 @@ const panelCards = document.querySelectorAll("[data-panel]");
 let selectedPanel;
 
 panelCards.forEach((panelCard) => {
+  // For development purposes only :
+  //document.querySelector('[data-panel="debounce"]').click();
+  // remove above after development please
   panelCard.addEventListener("click", function () {
     interactivePanel.style.display = "flex";
     labOptions.style.display = "none";
@@ -27,10 +32,19 @@ panelCards.forEach((panelCard) => {
       labOptions.style.display = "flex";
     });
     if (selectedPanel === "fetch") {
-      createFetchFields(interactivePanelPlayArea);
+      setupFetchIP(interactivePanelPlayArea);
+    }
+    if (selectedPanel === "debounce") {
+      setupDebounceIP(interactivePanelPlayArea);
+    }
+    if (selectedPanel === "throttle") {
+      setupThrottleIP(interactivePanelPlayArea);
+    }
+    if (selectedPanel === "eventloop") {
+      interactivePanelPlayArea.textContent = "I am currently working on this!";
     }
     if (selectedPanel === "canvas") {
-      launchSpaceShooter(interactivePanelPlayArea);
+      setupCanvasIP(interactivePanelPlayArea);
     }
   });
 });

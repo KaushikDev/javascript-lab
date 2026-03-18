@@ -11,17 +11,14 @@ let resTime;
 let resStatus;
 let resData;
 
-export function createFetchFields(interactivePanelPlayArea) {
+export function setupFetchIP(interactivePanelPlayArea) {
   //creating the container that will hold all the fields and features for fetch
   parentDiv = document.createElement("div");
-
   parentDiv.classList.add("ip__fetch-container");
-
   interactivePanelPlayArea.appendChild(parentDiv);
 
   // creating the select field where type of api request could be selected
   selectApiType = document.createElement("select");
-
   selectApiType.classList.add("fetch__selectType");
   parentDiv.appendChild(selectApiType);
 
