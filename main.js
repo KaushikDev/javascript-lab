@@ -2,6 +2,7 @@ import { setupCanvasIP, removeCanvasIP } from "./modules/canvas/canvas.js";
 import { setupFetchIP } from "./modules/fetch/fetch.js";
 import { setupDebounceIP } from "./modules/debounce/debounce.js";
 import { setupThrottleIP } from "./modules/throttle/throttle.js";
+import {setupEventloopIP} from "./modules/eventloop/eventloop.js";
 import { capitaliseFirstChar } from "./utils/helpers.js";
 
 const labOptions = document.querySelector(".js-lab__options");
@@ -39,7 +40,7 @@ panelCards.forEach((panelCard) => {
       setupThrottleIP(interactivePanelPlayArea);
     }
     if (selectedPanel === "eventloop") {
-      interactivePanelPlayArea.textContent = "I am currently working on this!";
+      setupEventloopIP(interactivePanelPlayArea);
     }
     if (selectedPanel === "canvas") {
       setupCanvasIP(interactivePanelPlayArea);
@@ -48,5 +49,5 @@ panelCards.forEach((panelCard) => {
 });
 
 // For development purposes only :
-document.querySelector('[data-panel="canvas"]').click();
+document.querySelector('[data-panel="eventloop"]').click();
 // remove above after development please
