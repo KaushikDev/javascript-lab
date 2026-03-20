@@ -49,5 +49,5 @@ panelCards.forEach((panelCard) => {
 });
 
 // For development purposes only :
-document.querySelector('[data-panel="eventloop"]').click();
+document.querySelector('[data-panel="canvas"]').click();
 // remove above after development please
