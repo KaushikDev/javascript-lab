@@ -38,6 +38,10 @@ export function setupCanvasIP(interactivePanelPlayArea) {
   const uiContainer = document.createElement("div");
   uiContainer.classList.add("ip__uiContainer");
   uiContainer.style.position = "absolute";
+  uiContainer.style.inset = "0"; // Shorthand for top: 0, left: 0, right: 0, bottom: 0
+  uiContainer.style.display = "flex";
+  uiContainer.style.justifyContent = "center";
+  uiContainer.style.alignItems = "center";
   parentDiv.appendChild(uiContainer);
 
   const canvas = document.createElement("canvas");
@@ -120,9 +124,10 @@ export function setupCanvasIP(interactivePanelPlayArea) {
             gameState = "OVER";
             startButton.style.display = "none";
             restartButton.style.display = "block";
-            score.score > highScore
-              ? localStorage.setItem("spaceShooterHighScore", score.score)
-              : null;
+            if (score.score > highScore) {
+              highScore = score.score;
+              localStorage.setItem("spaceShooterHighScore", highScore);
+            }
           }
         }
       });
@@ -148,18 +153,24 @@ export function setupCanvasIP(interactivePanelPlayArea) {
     } else if (gameState === "START") {
       drawText(
         ctx,
-        "Move using :  W, S, A, D, or Arrow keys.\n Shoot using : Space or O or X ",
-        canvas.width / 2 - 150,
+        "Move using :  W, S, A, D, or Arrow keys. ",
+        canvas.width / 2,
         canvas.height / 2,
       );
       drawText(
         ctx,
-        `HighScore : ${highScore}`,
-        canvas.width / 2 - 150,
+        " Shoot using : Space or O or X ",
+        canvas.width / 2,
         canvas.height / 3,
       );
+      drawText(
+        ctx,
+        `HighScore : ${highScore}`,
+        canvas.width / 2,
+        canvas.height / 4,
+      );
     } else if (gameState === "OVER") {
-      drawText(ctx, "GAME OVER", canvas.width / 2 - 150, canvas.height / 2);
+      drawText(ctx, "GAME OVER", canvas.width / 2, canvas.height / 2);
     }
 
     animationId = requestAnimationFrame(gameLoop);
@@ -298,7 +309,15 @@ class Score {
   }
 
   draw(ctx) {
-    drawText(ctx, `SCORE : ${this.score}`, this.x, this.y);
+    drawText(
+      ctx,
+      `SCORE : ${this.score}`,
+      this.x,
+      this.y,
+      "16px",
+      "#fff",
+      "left",
+    );
   }
 }
 
@@ -310,7 +329,15 @@ class Life {
   }
 
   draw(ctx) {
-    drawText(ctx, `LIVES : ${this.lives}`, this.x, this.y);
+    drawText(
+      ctx,
+      `LIVES : ${this.lives}`,
+      this.x,
+      this.y,
+      "16px",
+      "#fff",
+      "left",
+    );
   }
 }
 
@@ -327,9 +354,19 @@ function drawRect(ctx, x, y, width, height, color = "#fff") {
   ctx.fillRect(x, y, width, height);
 }
 
-function drawText(ctx, text, x, y, size = "16px", color = "#fff") {
+function drawText(
+  ctx,
+  text,
+  x,
+  y,
+  size = "16px",
+  color = "#fff",
+  align = "center",
+) {
   ctx.fillStyle = color;
   ctx.font = `${size} Arial`;
+  ctx.textAlign = align;
+  ctx.textBaseline = "middle";
   ctx.fillText(text, x, y);
 }
 
