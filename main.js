@@ -2,7 +2,7 @@ import { setupCanvasIP, removeCanvasIP } from "./modules/canvas/canvas.js";
 import { setupFetchIP } from "./modules/fetch/fetch.js";
 import { setupDebounceIP } from "./modules/debounce/debounce.js";
 import { setupThrottleIP } from "./modules/throttle/throttle.js";
-import {setupEventloopIP} from "./modules/eventloop/eventloop.js";
+import { setupEventloopIP } from "./modules/eventloop/eventloop.js";
 import { capitaliseFirstChar } from "./utils/helpers.js";
 
 const labOptions = document.querySelector(".js-lab__options");
@@ -15,6 +15,7 @@ let selectedPanel;
 
 panelCards.forEach((panelCard) => {
   panelCard.addEventListener("click", function () {
+    document.querySelector(".js-lab__options").style.display = "none";
     interactivePanel.style.display = "flex";
     labOptions.style.display = "none";
     selectedPanel = panelCard.dataset.panel;
@@ -47,7 +48,3 @@ panelCards.forEach((panelCard) => {
     }
   });
 });
-
-// For development purposes only :
-document.querySelector('[data-panel="canvas"]').click();
-// remove above after development please
