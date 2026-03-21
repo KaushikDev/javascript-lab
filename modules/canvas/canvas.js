@@ -42,6 +42,7 @@ export function setupCanvasIP(interactivePanelPlayArea) {
   uiContainer.style.display = "flex";
   uiContainer.style.justifyContent = "center";
   uiContainer.style.alignItems = "center";
+  uiContainer.style.pointerEvents = "none";
   parentDiv.appendChild(uiContainer);
 
   const canvas = document.createElement("canvas");
@@ -56,6 +57,8 @@ export function setupCanvasIP(interactivePanelPlayArea) {
   restartButton.innerText = "RESTART";
   startButton.style.display = "block";
   restartButton.style.display = "none";
+  startButton.style.pointerEvents = "auto";
+  restartButton.style.pointerEvents = "auto";
   uiContainer.appendChild(startButton);
   uiContainer.appendChild(restartButton);
 
@@ -342,11 +345,13 @@ class Life {
 }
 
 export function removeCanvasIP() {
-  cancelAnimationFrame(animationId);
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
   document.removeEventListener("keydown", handleKeyDown);
   document.removeEventListener("keyup", handleKeyUp);
 
-  resizeObserver.disconnect();
+  resizeObserver?.disconnect();
 }
 
 function drawRect(ctx, x, y, width, height, color = "#fff") {
