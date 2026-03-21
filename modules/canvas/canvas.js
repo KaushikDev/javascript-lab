@@ -1,6 +1,5 @@
 let animationId;
 let resizeObserver;
-let lasers = [];
 
 const keys = {
   ArrowUp: false,
@@ -12,6 +11,8 @@ const keys = {
   ArrowRight: false,
   KeyA: false,
   Space: false,
+  KeyX: false,
+  KeyO: false,
 };
 
 function handleKeyDown(e) {
@@ -24,20 +25,48 @@ function handleKeyUp(e) {
 }
 
 export function setupCanvasIP(interactivePanelPlayArea) {
-  const canvas = document.createElement("canvas");
-  const parentDiv = document.createElement("div");
+  let lasers = [];
+  let enemies = [];
+  let frames = 0;
+  let gameState = "START";
+  let highScore = localStorage.getItem("spaceShooterHighScore") || 0;
 
+  const parentDiv = document.createElement("div");
   parentDiv.classList.add("ip__canvas-container");
   interactivePanelPlayArea.appendChild(parentDiv);
 
-  parentDiv.appendChild(canvas);
+  const uiContainer = document.createElement("div");
+  uiContainer.classList.add("ip__uiContainer");
+  uiContainer.style.position = "absolute";
+  uiContainer.style.inset = "0"; // Shorthand for top: 0, left: 0, right: 0, bottom: 0
+  uiContainer.style.display = "flex";
+  uiContainer.style.justifyContent = "center";
+  uiContainer.style.alignItems = "center";
+  parentDiv.appendChild(uiContainer);
+
+  const canvas = document.createElement("canvas");
   canvas.classList.add("ip__canvas");
+  parentDiv.appendChild(canvas);
+
+  const startButton = document.createElement("button");
+  const restartButton = document.createElement("button");
+  startButton.classList.add("ui__start");
+  restartButton.classList.add("ui__restart");
+  startButton.innerText = "START";
+  restartButton.innerText = "RESTART";
+  startButton.style.display = "block";
+  restartButton.style.display = "none";
+  uiContainer.appendChild(startButton);
+  uiContainer.appendChild(restartButton);
+
   const ctx = canvas.getContext("2d");
 
   document.addEventListener("keydown", handleKeyDown);
   document.addEventListener("keyup", handleKeyUp);
 
   let player = new Player(100, 100);
+  let score = new Score(200, 100);
+  let life = new Life(300, 100);
 
   resizeObserver = new ResizeObserver((entries) => {
     for (let entry of entries) {
@@ -49,25 +78,122 @@ export function setupCanvasIP(interactivePanelPlayArea) {
       player.cHeight = height;
 
       player.y = height / 2 - player.size / 2;
+
+      score.x = canvas.width - 150;
+      score.y = 30;
+
+      life.x = canvas.width - 250;
+      life.y = 30;
     }
   });
   resizeObserver.observe(parentDiv);
 
   function gameLoop() {
+    frames++;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#101040";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    player.update();
-    player.draw(ctx);
-    lasers.forEach((laser) => {
-      laser.update();
-      laser.draw(ctx);
-    });
+    drawRect(ctx, 0, 0, canvas.width, canvas.height, "#101040");
+    if (gameState === "PLAYING") {
+      //updates:
+      player.update(lasers);
+      lasers.forEach((laser) => {
+        laser.update();
+      });
+      if (frames % 60 === 0) {
+        enemies.push(
+          new Enemy(canvas.width - 30, Math.random() * (canvas.height - 30)),
+        );
+      }
+      enemies.forEach((enemy) => {
+        enemy.update();
+      });
+
+      //collisions
+      enemies.forEach((enemy) => {
+        lasers.forEach((laser) => {
+          if (collisionDetection(enemy, laser)) {
+            enemy.markedForDeletion = true;
+            laser.markedForDeletion = true;
+            score.score++;
+          }
+        });
+        if (collisionDetection(enemy, player)) {
+          life.lives--;
+          enemy.markedForDeletion = true;
+          if (life.lives <= 0) {
+            gameState = "OVER";
+            startButton.style.display = "none";
+            restartButton.style.display = "block";
+            if (score.score > highScore) {
+              highScore = score.score;
+              localStorage.setItem("spaceShooterHighScore", highScore);
+            }
+          }
+        }
+      });
+
+      //filtering only onscreen objects
+      lasers = lasers.filter(
+        (laser) => laser.x < canvas.width && !laser.markedForDeletion,
+      );
+      enemies = enemies.filter(
+        (enemy) => enemy.x + enemy.width > 0 && !enemy.markedForDeletion,
+      );
+
+      //drawing
+      player.draw(ctx);
+      lasers.forEach((laser) => {
+        laser.draw(ctx);
+      });
+      enemies.forEach((enemy) => {
+        enemy.draw(ctx);
+      });
+      score.draw(ctx);
+      life.draw(ctx);
+    } else if (gameState === "START") {
+      drawText(
+        ctx,
+        "Move using :  W, S, A, D, or Arrow keys. ",
+        canvas.width / 2,
+        canvas.height / 2,
+      );
+      drawText(
+        ctx,
+        " Shoot using : Space or O or X ",
+        canvas.width / 2,
+        canvas.height / 3,
+      );
+      drawText(
+        ctx,
+        `HighScore : ${highScore}`,
+        canvas.width / 2,
+        canvas.height / 4,
+      );
+    } else if (gameState === "OVER") {
+      drawText(ctx, "GAME OVER", canvas.width / 2, canvas.height / 2);
+    }
 
     animationId = requestAnimationFrame(gameLoop);
   }
 
   requestAnimationFrame(gameLoop);
+
+  startButton.addEventListener("click", () => {
+    gameState = "PLAYING";
+    startButton.style.display = "none";
+  });
+
+  restartButton.addEventListener("click", () => {
+    restartButton.style.display = "none";
+    gameState = "PLAYING";
+    lasers = [];
+    enemies = [];
+    frames = 0;
+    score.score = 0;
+    life.lives = 3;
+    player.x = 50;
+    player.y = canvas.height / 2 - player.size / 2;
+  });
 }
 
 class Player {
@@ -78,6 +204,8 @@ class Player {
     this.speed = 5;
     this.gunWidth = 20;
     this.gunHeight = 10;
+    this.width = this.size + this.gunWidth;
+    this.height = this.size;
 
     this.x = 50;
     this.y = this.cHeight / 2 - this.size / 2;
@@ -85,7 +213,7 @@ class Player {
     this.cooldown = 0;
   }
 
-  update() {
+  update(lasers) {
     if (keys.ArrowUp || keys.KeyW) {
       this.y = this.y - this.speed;
     }
@@ -115,7 +243,7 @@ class Player {
       this.cooldown--;
     }
 
-    if (keys.Space && this.cooldown === 0) {
+    if ((keys.Space || keys.KeyX || keys.KeyO) && this.cooldown === 0) {
       let gunTipX = this.x + this.size + this.gunWidth;
       let gunTipY = this.y + this.size / 2 - 5;
       lasers.push(new Laser(gunTipX, gunTipY));
@@ -124,10 +252,9 @@ class Player {
   }
 
   draw(ctx) {
-    ctx.fillStyle = "#fff";
-    ctx.fillRect(this.x, this.y, this.size, this.size);
-
-    ctx.fillRect(
+    drawRect(ctx, this.x, this.y, this.size, this.size, "#00f");
+    drawRect(
+      ctx,
       this.x + this.size,
       this.y + this.size / 2 - this.gunHeight / 2,
       this.gunWidth,
@@ -143,15 +270,74 @@ class Laser {
     this.width = 10;
     this.height = 10;
     this.speed = 10;
+    this.markedForDeletion = false;
   }
 
   update() {
-    this.x = this.x + this.speed;
+    this.x += this.speed;
   }
 
   draw(ctx) {
-    ctx.fillStyle = "#f00";
-    ctx.fillRect(this.x, this.y, this.width, this.height);
+    drawRect(ctx, this.x, this.y, this.width, this.height, "#0f0");
+  }
+}
+
+class Enemy {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 30;
+    this.height = 30;
+    this.speed = 5;
+    this.markedForDeletion = false;
+  }
+
+  update() {
+    this.x -= this.speed;
+  }
+
+  draw(ctx) {
+    drawRect(ctx, this.x, this.y, this.width, this.height, "#f00");
+  }
+}
+
+class Score {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.score = 0;
+  }
+
+  draw(ctx) {
+    drawText(
+      ctx,
+      `SCORE : ${this.score}`,
+      this.x,
+      this.y,
+      "16px",
+      "#fff",
+      "left",
+    );
+  }
+}
+
+class Life {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.lives = 3;
+  }
+
+  draw(ctx) {
+    drawText(
+      ctx,
+      `LIVES : ${this.lives}`,
+      this.x,
+      this.y,
+      "16px",
+      "#fff",
+      "left",
+    );
   }
 }
 
@@ -161,4 +347,34 @@ export function removeCanvasIP() {
   document.removeEventListener("keyup", handleKeyUp);
 
   resizeObserver.disconnect();
+}
+
+function drawRect(ctx, x, y, width, height, color = "#fff") {
+  ctx.fillStyle = color;
+  ctx.fillRect(x, y, width, height);
+}
+
+function drawText(
+  ctx,
+  text,
+  x,
+  y,
+  size = "16px",
+  color = "#fff",
+  align = "center",
+) {
+  ctx.fillStyle = color;
+  ctx.font = `${size} Arial`;
+  ctx.textAlign = align;
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, x, y);
+}
+
+function collisionDetection(rect1, rect2) {
+  return (
+    rect1.x < rect2.x + rect2.width &&
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y
+  );
 }
