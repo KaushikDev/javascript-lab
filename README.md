@@ -4,6 +4,12 @@ An interactive, no-framework playground to learn, visualize, and experiment with
 
 ---
 
+## Live Demo
+
+https://jslab.kaushikdev.com/
+
+---
+
 ## Overview
 
 This project transforms abstract JavaScript concepts into interactive experiences. Instead of only reading about topics like debounce or the event loop, users can directly interact with them and understand their behavior in real time.
