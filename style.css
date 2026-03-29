@@ -1,94 +1,173 @@
-* {
-    box-sizing: border-box;
+
+*,
+*::before,
+*::after {
+box-sizing: border-box;
 }
+
+
+:root {
+--bg: #0f172a;
+--card: rgba(255, 255, 255, 0.05);
+--border: rgba(255, 255, 255, 0.1);
+--text: #e2e8f0;
+--accent: #38bdf8;
+}
+
 
 body {
-    margin: 0;
-    padding: 16px;
-    max-width: 1240px;
-    height: 100vh;
-    overflow: hidden;
-    margin-inline: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
+margin: 0;
+font-family: "Inter", sans-serif;
+background: var(--bg);
+color: var(--text);
+overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6, p {
-    margin: 0;
+.app-bg {
+position: fixed;
+inset: 0;
+background: radial-gradient(circle at 20% 20%, #1e3a8a, transparent),
+radial-gradient(circle at 80% 80%, #9333ea, transparent);
+z-index: -1;
+filter: blur(100px);
 }
 
-input, button, select, textarea {
-    margin: 8px;
-    padding: 8px;
-    border: 1px solid #666;
-    border-radius: 4px;
+.hero {
+text-align: center;
+margin-top: 30px;
+margin-bottom: 10px;
 }
 
-button, select {
-    cursor: pointer;
+.hero h1 {
+font-size: 42px;
+margin-bottom: 8px;
 }
 
-/* --- THE MAIN MENU OPTIONS AREA --- */
+.hero p {
+opacity: 0.7;
+}
+
+
 .js-lab__options {
-    width: 100%;
-    margin-top: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 16px;
-    flex: 1;
-    min-height: 0;
+width: 100%;
+max-width: 1200px;
+margin: 40px auto 60px auto;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 24px;
+}
+
+.js-lab__options h2 {
+font-size: 22px;
+font-weight: 500;
+opacity: 0.85;
+margin-bottom: 10px;
 }
 
 .js-lab__cards-grid {
-    width: 100%;
-    padding: 4px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-content: flex-start;
-    gap: 16px;
-    flex: 1;
-    overflow-y: auto;
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 20px;
+width: 100%;
+padding: 20px;
+padding-bottom: 60px;
 }
 
+
 .js-lab__card {
-    cursor: pointer;
-    background-color: #eff;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    border: 1px solid #666;
-    border-radius: 8px;
-    text-align: center;
-    width: 250px;
-    max-width: 100%;
-    min-height: 220px;
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 20px;
+backdrop-filter: blur(10px);
+cursor: pointer;
+transition: all 0.25s ease;
+position: relative;
+overflow: hidden;
+}
+
+.js-lab__card:hover {
+transform: translateY(-6px) scale(1.02);
+border-color: var(--accent);
+box-shadow: 0 10px 40px rgba(56, 189, 248, 0.2);
+}
+
+.js-lab__card::after {
+content: "";
+position: absolute;
+inset: 0;
+background: radial-gradient(circle at top, rgba(56,189,248,0.15), transparent);
+opacity: 0;
+transition: 0.3s;
+}
+
+.js-lab__card:hover::after {
+opacity: 1;
 }
 
 .js-lab__interactive-panel {
-    width: 100%;
-    padding: 16px 0;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden; 
-    display: flex;
-    flex-direction: column;
+position: fixed;
+inset: 0;
+background: rgba(15, 23, 42, 0.95);
+backdrop-filter: blur(20px);
+display: none;
+animation: fadeIn 0.3s ease;
+}
+
+.ip__container {
+width: 90%;
+max-width: 1000px;
+margin: auto;
+margin-top: 40px;
+background: var(--card);
+border-radius: 20px;
+padding: 20px;
+border: 1px solid var(--border);
+display: flex;
+flex-direction: column;
+height: 80%;
+overflow: hidden;
+}
+
+.ip__playarea {
+flex: 1;
+width: 100%;
+overflow: hidden;
+}
+
+input,
+textarea,
+select,
+button {
+width: 100%;
+max-width: 100%;
+display: block;
+box-sizing: border-box;
+}
+
+button{
+    cursor: pointer;
 }
 
 
-.js-lab__interactive-panel > div {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+.ip__close {
+margin-top: 10px;
+padding: 10px;
+border-radius: 10px;
+background: #ef4444;
+color: white;
+border: none;
+cursor: pointer;
+transition: 0.2s;
 }
 
-.js-lab__interactive-panel:empty {
-    display: none;
+.ip__close:hover {
+background: #dc2626;
+}
+
+
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
 }

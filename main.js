@@ -20,9 +20,9 @@ panelCards.forEach((panelCard) => {
     labOptions.style.display = "none";
     selectedPanel = panelCard.dataset.panel;
     console.log(selectedPanel);
-    interactivePanel.innerHTML = `<div class="ip__container"><h2>Now showing ${capitaliseFirstChar(selectedPanel)} Explorer</h2>
+    interactivePanel.innerHTML = `<div class="ip__container"><h2> ${capitaliseFirstChar(selectedPanel)} Explorer</h2>
     <div class="ip__playarea"></div>
-    <button class="ip__close">Close Panel</button></div>`;
+    <button class="ip__close">CLOSE</button></div>`;
 
     interactivePanelPlayArea = document.querySelector(".ip__playarea");
     closeIpBtn = document.querySelector(".ip__close");
