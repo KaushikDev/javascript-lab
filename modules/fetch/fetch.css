@@ -1,43 +1,81 @@
 .ip__fetch-container {
-    box-sizing: border-box;
-    padding: 16px;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    gap: 12px;
+box-sizing: border-box;
+padding: 16px;
+width: 100%;
+height: 100%;
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.fetch__selectType,
+.fetch__inputApi,
+.fetch__inputApiBody {
+width: 100%;
+border-radius: 10px;
+padding: 12px;
+font-size: 14px;
+outline: none;
+transition: 0.2s;
+background: rgba(255,255,255,0.05);
+color: #e2e8f0;
+border: 1px solid rgba(255,255,255,0.15);
+}
+
+.fetch__inputApi::placeholder,
+.fetch__inputApiBody::placeholder {
+color: rgba(226,232,240,0.5);
+}
+
+.fetch__inputApi:focus,
+.fetch__inputApiBody:focus,
+.fetch__selectType:focus {
+border-color: #38bdf8;
+box-shadow: 0 0 0 2px rgba(56,189,248,0.2);
+}
+
+.fetch__inputApiBody {
+min-height: 100px;
+resize: vertical;
+font-family: monospace;
+}
+
+.fetch__btn {
+background: linear-gradient(135deg, #38bdf8, #6366f1);
+border: none;
+color: white;
+font-weight: 600;
+padding: 12px;
+border-radius: 12px;
+cursor: pointer;
+}
+
+.fetch__btn:hover {
+box-shadow: 0 6px 20px rgba(56,189,248,0.3);
 }
 
 .fetch__responseSection {
-    display: flex;
-    flex-direction: column; 
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    margin-top: 10px;
-    gap: 8px;
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 8px;
+border-top: 1px solid rgba(255,255,255,0.1);
+padding-top: 12px;
 }
 
 .res__details {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    font-weight: bold;
+display: flex;
+justify-content: space-between;
+font-size: 13px;
+opacity: 0.8;
 }
 
 .res__data {
-  
-    flex: 1; 
-    min-height: 0;
-    overflow-y: auto; 
-    overflow-x: auto; 
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    text-align: left;
-    background-color: #f5f5f5;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+flex: 1;
+overflow: auto;
+background: rgba(255,255,255,0.05);
+border-radius: 12px;
+padding: 12px;
+font-size: 13px;
+white-space: pre-wrap;
 }
